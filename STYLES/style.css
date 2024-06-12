@@ -1,0 +1,80 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin: 10px; /* Adiciona espaçamento entre os cards */
+    transition: transform 0.2s;
+    width: 250px; /* Tamanho fixo */
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border-radius: 50%;
+}
+
+.form-card {
+    max-width: 300px;
+}
+
+#eventsList .card {
+    min-width: 250px;
+    max-width: 250px;
+}
+
+
+
+
+
+/* Adiciona espaçamento interno na horizontal e vertical nos cards dos eventos */
+#eventsList .card {
+    padding: 10px; /* Adiciona espaçamento interno de 10px em todas as direções */
+    margin-bottom: 20px; /* Mantém o espaçamento vertical entre os cards */
+}
+
+
+  /* imagem de fundo do site  */
+  body {
+    background-image: url('https://img.freepik.com/fotos-gratis/fundo-texturizado-abstrato_1258-30473.jpg'); /* Substitua 'caminho/para/sua/imagem.jpg' pelo caminho real da sua imagem */
+    background-size: cover; /* Ajusta o tamanho da imagem para cobrir todo o elemento body */
+    background-position: center; /* Centraliza a imagem no body */
+    background-repeat: no-repeat; /* Evita que a imagem se repita */
+}
+
+
+/* tamanho do icon calendario */
+.fa1 {
+    font-size: 3em; /* Ajuste o tamanho conforme necessário */
+}
+
+
+
+/* Estilo para o botão fixo do WhatsApp */
+#whatsapp-fixed {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#whatsapp-fixed .btn {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+#whatsapp-fixed .btn .fab {
+    margin-right: 8px;
+}
