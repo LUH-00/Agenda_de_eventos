@@ -41,9 +41,17 @@ document.addEventListener("DOMContentLoaded", function() {
         const eventTitle = document.getElementById(`eventTitle-${eventId}`).value;
         const eventDate = new Date(document.getElementById(`eventDate-${eventId}`).value);
 
+        const now = new Date();
+        const timeToEvent = eventDate - now;
+
         if (!isNaN(eventDate)) {
+            if (timeToEvent <= 0) {
+                alert("A data e hora selecionadas já passaram. Por favor, selecione uma data e hora futuras.");
+                return;
+            }
+
             const eventHTML = `
-                <div class="card mt-2" id="event-${eventId}">
+                <div class="card mt-2 event-card ${eventDate < now ? 'event-card-passed' : ''}" id="event-${eventId}">
                     <div class="card-body">
                         <h5 class="card-title">${eventTitle}</h5>
                         <p class="card-text">${eventDate.toLocaleString()}</p>
@@ -62,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function saveEventToLocalStorage(eventId, title, date) {
-        const event = { id: eventId, title, date };
+        const event = { id: eventId, title, date, notified: false };
         let events = JSON.parse(localStorage.getItem('events')) || [];
         events.push(event);
         localStorage.setItem('events', JSON.stringify(events));
@@ -71,14 +79,24 @@ document.addEventListener("DOMContentLoaded", function() {
     function loadEventsFromLocalStorage() {
         const events = JSON.parse(localStorage.getItem('events')) || [];
         events.forEach(event => {
-            addEventCard(event.id, event.title, new Date(event.date));
-            scheduleNotification(event.title, new Date(event.date), event.id);
+            const eventDate = new Date(event.date);
+            if (new Date() > eventDate && !event.notified) {
+                // Evento já passou e ainda não foi notificado
+                showMissedNotification(event.title);
+                playAlarm();
+                markEventAsNotified(event.id);
+            } else {
+                // Adiciona o evento à lista, verificando se já passou para aplicar a classe event-card-passed
+                addEventCard(event.id, event.title, eventDate);
+                scheduleNotification(event.title, eventDate, event.id);
+            }
         });
     }
 
     function addEventCard(eventId, eventTitle, eventDate) {
+        const now = new Date();
         const eventHTML = `
-            <div class="card mt-2" id="event-${eventId}">
+            <div class="card mt-2 event-card ${eventDate < now ? 'event-card-passed' : ''}" id="event-${eventId}">
                 <div class="card-body">
                     <h5 class="card-title">${eventTitle}</h5>
                     <p class="card-text">${eventDate.toLocaleString()}</p>
@@ -96,32 +114,67 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (timeToEvent > 0) {
             setTimeout(function() {
-                showNotification(title);
+                showNotification(title, id);
                 playAlarm();
-                removeEvent(id);
             }, timeToEvent);
         }
+        // Não há remoção automática de eventos passados aqui
     }
 
-    function showNotification(title) {
+    function showNotification(title, id) {
         if (Notification.permission === "granted") {
-            new Notification("Evento de Hoje", {
+            const notification = new Notification("Evento de Hoje", {
                 body: `Não se esqueça!: ${title}`,
                 icon: "https://image.flaticon.com/icons/png/512/609/609051.png"
             });
+
+            notification.onclick = function() {
+                notification.close();
+                stopAlarm();
+                removeEvent(id);
+            };
         } else {
             alert(`Não se esqueça do seu evento: ${title}`);
+            playAlarm();
         }
+    }
+
+    function showMissedNotification(title) {
+        if (Notification.permission === "granted") {
+            new Notification("Evento Perdido", {
+                body: `Você perdeu este evento: ${title}`,
+                icon: "https://image.flaticon.com/icons/png/512/609/609051.png"
+            });
+        } else {
+            alert(`Você perdeu este evento: ${title}`);
+        }
+    }
+
+    function markEventAsNotified(id) {
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        events = events.map(event => {
+            if (event.id === id) {
+                event.notified = true;
+            }
+            return event;
+        });
+        localStorage.setItem('events', JSON.stringify(events));
     }
 
     function playAlarm() {
         alarmSound.play();
     }
 
+    function stopAlarm() {
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+    }
+
     window.removeEvent = function(id) {
         const eventCard = document.getElementById(`event-${id}`);
         if (eventCard) {
             eventCard.remove();
+            stopAlarm();  // Parar o alarme ao remover o evento
             removeEventFromLocalStorage(id);
         }
     }
@@ -145,59 +198,3 @@ document.addEventListener("DOMContentLoaded", function() {
 
     loadEventsFromLocalStorage();
 });
-
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Seu código existente...
-
-    function scheduleNotification(title, date, id) {
-        const now = new Date();
-        const timeToEvent = date - now;
-
-        if (timeToEvent > 0) {
-            setTimeout(function() {
-                showNotification(title);
-                playAlarm();
-                removeEvent(id);
-            }, timeToEvent);
-        } else {
-            // Se o tempo já passou, remove o evento imediatamente
-            removeEvent(id);
-        }
-    }
-
-});
-
-// evento para informar o usuario sobre data e hora inválido:
-
-function addEvent(eventId) {
-    const eventTitle = document.getElementById(`eventTitle-${eventId}`).value;
-    const eventDate = new Date(document.getElementById(`eventDate-${eventId}`).value);
-
-    const now = new Date();
-    const timeToEvent = eventDate - now;
-
-    if (!isNaN(eventDate)) {
-        if (timeToEvent <= 0) {
-            alert("A data e hora selecionadas já passaram. Por favor, selecione uma data e hora futuras.");
-            return;
-        }
-
-        const eventHTML = `
-            <div class="card mt-2" id="event-${eventId}">
-                <div class="card-body">
-                    <h5 class="card-title">${eventTitle}</h5>
-                    <p class="card-text">${eventDate.toLocaleString()}</p>
-                    <button class="btn btn-danger btn-sm float-right" onclick="removeEvent(${eventId})">&times;</button>
-                </div>
-            </div>
-        `;
-
-        eventsList.insertAdjacentHTML("beforeend", eventHTML);
-        saveEventToLocalStorage(eventId, eventTitle, eventDate);
-        scheduleNotification(eventTitle, eventDate, eventId);
-        removeForm(eventId);
-    } else {
-        alert("Por favor, insira uma data e hora válidas.");
-    }
-}

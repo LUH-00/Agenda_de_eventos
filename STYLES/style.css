@@ -1,14 +1,18 @@
 body {
     background-color: #f8f9fa;
+    background-image: url('https://img.freepik.com/fotos-gratis/fundo-texturizado-abstrato_1258-30473.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .card {
     background-color: #ffffff;
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
-    margin: 10px; /* Adiciona espaçamento entre os cards */
+    margin: 10px;
     transition: transform 0.2s;
-    width: 250px; /* Tamanho fixo */
+    width: 250px;
 }
 
 .card:hover {
@@ -32,36 +36,14 @@ body {
 #eventsList .card {
     min-width: 250px;
     max-width: 250px;
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
-
-
-
-
-/* Adiciona espaçamento interno na horizontal e vertical nos cards dos eventos */
-#eventsList .card {
-    padding: 10px; /* Adiciona espaçamento interno de 10px em todas as direções */
-    margin-bottom: 20px; /* Mantém o espaçamento vertical entre os cards */
-}
-
-
-  /* imagem de fundo do site  */
-  body {
-    background-image: url('https://img.freepik.com/fotos-gratis/fundo-texturizado-abstrato_1258-30473.jpg'); /* Substitua 'caminho/para/sua/imagem.jpg' pelo caminho real da sua imagem */
-    background-size: cover; /* Ajusta o tamanho da imagem para cobrir todo o elemento body */
-    background-position: center; /* Centraliza a imagem no body */
-    background-repeat: no-repeat; /* Evita que a imagem se repita */
-}
-
-
-/* tamanho do icon calendario */
 .fa1 {
-    font-size: 3em; /* Ajuste o tamanho conforme necessário */
+    font-size: 3em;
 }
 
-
-
-/* Estilo para o botão fixo do WhatsApp */
 #whatsapp-fixed {
     position: fixed;
     bottom: 20px;
@@ -77,4 +59,40 @@ body {
 
 #whatsapp-fixed .btn .fab {
     margin-right: 8px;
+}
+/* ----------------COR DO CARD MUADA PARA VERMELHO QUANDO O EVENTO PASSA */
+.event-card {
+    border: 2px solid green; /* Bordas verdes para eventos que ainda não passaram */
+}
+
+.event-card-passed {
+    border: 2px solid red; /* Bordas vermelhas para eventos que já passaram */
+    opacity: 0.7; /* Reduz a opacidade para eventos passados */
+}
+
+#whatsapp-fixed .btn {
+    font-size: 16px; /* Reduzi a fonte para melhorar a legibilidade */
+    display: flex;
+    align-items: center;
+    padding: 10px 15px; /* Aumentei o padding para melhorar o clique em dispositivos móveis */
+}
+
+@media (max-width: 576px) {
+    #whatsapp-fixed {
+        bottom: 10px; /* Reduzi a distância do fundo em telas menores */
+        right: 10px; /* Reduzi a distância da direita em telas menores */
+    }
+
+    #whatsapp-fixed .btn {
+        font-size: 14px; /* Ajustei ainda mais a fonte para telas menores */
+        padding: 8px 12px; /* Ajustei o padding para telas menores */
+    }
+}
+
+body {
+    background-color: #f8f9fa;
+    background-image: url('https://img.freepik.com/fotos-gratis/fundo-texturizado-abstrato_1258-30473.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
